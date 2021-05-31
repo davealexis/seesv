@@ -13,8 +13,8 @@ import (
 )
 
 /*
-	DelimitedFile holds metadata about the file being worked with, and exposes methods to work
-	with the file.
+DelimitedFile holds metadata about the file being worked with, and exposes methods to work
+with the file.
 */
 type DelimitedFile struct {
 	File     *os.File
@@ -27,23 +27,23 @@ type DelimitedFile struct {
 // ................................................................................................
 
 /*
-	Open initializes access to a delimited file (e.g. CSV file). This includes
-	stats (file size, number of rows), optionally skipping irrelevant lines at the top of the file,
-	parsing the column headers, and creating an index of row positions to enable O(1) access to
-	any part of the file.
+Open initializes access to a delimited file (e.g. CSV file). This includes
+stats (file size, number of rows), optionally skipping irrelevant lines at the top of the file,
+parsing the column headers, and creating an index of row positions to enable O(1) access to
+any part of the file.
 
-	Example:
-		var csvFile seesv.DelimitedFile
-		err := csvFile.Open("/path/to/file.csv", 1, true)
+Example:
+    var csvFile seesv.DelimitedFile
+    err := csvFile.Open("/path/to/file.csv", 1, true)
 
-	This opens the specified CSV file and specified that the 1st line of the file should be ignored (skipped)
-	and that the file contains a column header line.
+This opens the specified CSV file and specified that the 1st line of the file should be ignored (skipped)
+and that the file contains a column header line.
 
-		for row := csvFile.Rows(csvFile.RowCount - 10) {
-				...
-		}
+    for row := csvFile.Rows(csvFile.RowCount - 10) {
+            ...
+    }
 
-	This returns the last 10 rows of the file.
+This returns the last 10 rows of the file.
 */
 func (df *DelimitedFile) Open(filePath string, linesToSkip int, hasHeader bool) error {
 	df.RowIndex = make([]int64, 0, 10_000)
@@ -141,13 +141,13 @@ func (df *DelimitedFile) Open(filePath string, linesToSkip int, hasHeader bool) 
 // ................................................................................................
 
 /*
-	Row returns the row specified by rowNumber. Row numbers are zero-based, so .Row(0) returns the
-	first data row of the file.
+Row returns the row specified by rowNumber. Row numbers are zero-based, so .Row(0) returns the
+first data row of the file.
 
-	Row data is returned as an array of strings.
+Row data is returned as an array of strings.
 
-	Nil is returned if the specified row number is greater than the number of rows in the file or
-	there is an error parsing the data.
+Nil is returned if the specified row number is greater than the number of rows in the file or
+there is an error parsing the data.
 */
 func (df *DelimitedFile) Row(rowNumber int64) []string {
 	if rowNumber >= df.RowCount {
@@ -169,13 +169,13 @@ func (df *DelimitedFile) Row(rowNumber int64) []string {
 // ................................................................................................
 
 /*
-	Rows returns a stream of data rows starting from line `rowNumber` in the file.
+Rows returns a stream of data rows starting from line `rowNumber` in the file.
 
-	If `rowCount` is specified, that number of rows will be returned, unless the end of the file
-	is reached.
+If `rowCount` is specified, that number of rows will be returned, unless the end of the file
+is reached.
 
-	If -1 is specified for `rowCount` then the stream will start at `rowNumber` and continue until
-	the end of the file.
+If -1 is specified for `rowCount` then the stream will start at `rowNumber` and continue until
+the end of the file.
 */
 func (df *DelimitedFile) Rows(rowNumber int64, rowCount int64) <-chan []string {
 	rowsChan := make(chan []string)
@@ -216,8 +216,8 @@ func (df *DelimitedFile) Rows(rowNumber int64, rowCount int64) <-chan []string {
 // ................................................................................................
 
 /*
-	skipLines moves the file pointer past the end of the number of lines specified so that those
-	lines are ignored by the rest of the file processing.
+skipLines moves the file pointer past the end of the number of lines specified so that those
+lines are ignored by the rest of the file processing.
 */
 func skipLines(file *os.File, linesToSkip int) int64 {
 	var pos int64
@@ -248,12 +248,12 @@ func skipLines(file *os.File, linesToSkip int) int64 {
 // ................................................................................................
 
 /*
-	readHeader parses the column header row starting from the byte position in `startPosition`.
-	This would be 0 if the file has no extra top lines to be ignored.
+readHeader parses the column header row starting from the byte position in `startPosition`.
+This would be 0 if the file has no extra top lines to be ignored.
 
-	If the file has lines to be ignored, the call to `skipLines()` will move past them and return
-	byte position at which the normal file starts. This position would normally then be passed
-	to `readHeader()`.
+If the file has lines to be ignored, the call to `skipLines()` will move past them and return
+byte position at which the normal file starts. This position would normally then be passed
+to `readHeader()`.
 */
 func readHeader(file *os.File, startPosition int64) ([]string, int64, error) {
 	pos, err := file.Seek(startPosition, 0)
