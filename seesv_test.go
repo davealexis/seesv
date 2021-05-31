@@ -115,3 +115,25 @@ func TestScanRows(t *testing.T) {
 		t.Errorf("Row scan did not produce expecter row count. Expected %d. Got %d", csvFile.RowCount, rCount)
 	}
 }
+
+func TestGetInvalidRow(t *testing.T) {
+	var csvFile seesv.DelimitedFile
+	err := csvFile.Open("testdata/test.csv", 0, true)
+	if err != nil {
+		log.Fatal("Failed to open file")
+	}
+	defer csvFile.File.Close()
+
+	invalidRowNumber := csvFile.RowCount + 10
+	row := csvFile.Row(invalidRowNumber)
+
+	// Expect row to be nil
+	if row != nil {
+		t.Error("Should have returned empty row")
+	}
+
+	for row := range csvFile.Rows(invalidRowNumber, -1) {
+		// Should not get here
+		t.Errorf("Should not have gotten a row: %v", row)
+	}
+}

@@ -149,7 +149,7 @@ Row data is returned as an array of strings.
 Nil is returned if the specified row number is greater than the number of rows in the file or
 there is an error parsing the data.
 */
-func (df *DelimitedFile) Row(rowNumber int64) []string {
+func (df DelimitedFile) Row(rowNumber int64) []string {
 	if rowNumber >= df.RowCount {
 		return nil
 	}
@@ -177,11 +177,12 @@ is reached.
 If -1 is specified for `rowCount` then the stream will start at `rowNumber` and continue until
 the end of the file.
 */
-func (df *DelimitedFile) Rows(rowNumber int64, rowCount int64) <-chan []string {
+func (df DelimitedFile) Rows(rowNumber int64, rowCount int64) <-chan []string {
 	rowsChan := make(chan []string)
 
 	if rowNumber >= df.RowCount {
 		close(rowsChan)
+		return rowsChan
 	}
 
 	rowPosition := df.RowIndex[rowNumber]
