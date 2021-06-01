@@ -41,16 +41,16 @@ import (
 )
 
 func main() {
-	var csvFile seesv.DelimitedFile
-	err := csvFile.Open("testdata/test.csv", 0, true)
-	if err != nil {
-		log.Fatal("Failed to open file")
-	}
-	defer csvFile.File.Close()
+    var csvFile seesv.DelimitedFile
+    err := csvFile.Open("testdata/test.csv", 0, true)
+    if err != nil {
+        log.Fatal("Failed to open file")
+    }
+    defer csvFile.File.Close()
 
     fmt.Println("The file has", csvFile.RowCount, "rows. Size is", csvFile.Size, "bytes.")
 
-	fmt.Println(csvFile.Headers)
+    fmt.Println(csvFile.Headers)
 
     for row := csvFile.Rows(0, -1) {
         // Do something with row
@@ -69,14 +69,14 @@ import (
 )
 
 func main() {
-	var csvFile seesv.DelimitedFile
-	err := csvFile.Open("testdata/test.csv", 2, true)
-	if err != nil {
-		log.Fatal("Failed to open file")
-	}
-	defer csvFile.File.Close()
+    var csvFile seesv.DelimitedFile
+    err := csvFile.Open("testdata/test.csv", 2, true)
+    if err != nil {
+        log.Fatal("Failed to open file")
+    }
+    defer csvFile.File.Close()
 
-	fmt.Println(csvFile.Headers)
+    fmt.Println(csvFile.Headers)
 
     // Get 1,000 rows starting from row 25,000
     for row := csvFile.Rows(25_000, 1_000) {
@@ -96,12 +96,12 @@ import (
 )
 
 func main() {
-	var csvFile seesv.DelimitedFile
-	err := csvFile.Open("testdata/test.csv", 0, false)
-	if err != nil {
-		log.Fatal("Failed to open file")
-	}
-	defer csvFile.File.Close()
+    var csvFile seesv.DelimitedFile
+    err := csvFile.Open("testdata/test.csv", 0, false)
+    if err != nil {
+        log.Fatal("Failed to open file")
+    }
+    defer csvFile.File.Close()
 
     for row := csvFile.Rows(0, -1) {
         // Do something with row
@@ -122,12 +122,12 @@ import (
 )
 
 func main() {
-	var csvFile seesv.DelimitedFile
-	err := csvFile.Open("testdata/test.csv", 0, false)
-	if err != nil {
-		log.Fatal("Failed to open file")
-	}
-	defer csvFile.File.Close()
+    var csvFile seesv.DelimitedFile
+    err := csvFile.Open("testdata/test.csv", 0, false)
+    if err != nil {
+        log.Fatal("Failed to open file")
+    }
+    defer csvFile.File.Close()
 
     // Get row 10
     row := csvFile.Row(10) {
