@@ -215,6 +215,16 @@ func (df DelimitedFile) Rows(rowNumber int64, rowCount int64) <-chan []string {
 }
 
 // ................................................................................................
+func (df *DelimitedFile) Close() {
+	df.File.Close()
+	df.File = nil
+	df.RowCount = 0
+	df.RowIndex = make([]int64, 0)
+	df.Headers = make([]string, 0)
+	df.Size = 0
+}
+
+// ................................................................................................
 
 /*
 skipLines moves the file pointer past the end of the number of lines specified so that those

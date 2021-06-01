@@ -13,7 +13,7 @@ func TestOpen(t *testing.T) {
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
-	defer csvFile.File.Close()
+	defer csvFile.Close()
 
 	if csvFile.RowCount != 4 {
 		t.Errorf("Expected 4 data rows in test.csv. Got %d", csvFile.RowCount)
@@ -40,7 +40,7 @@ func TestOpenSkipLines(t *testing.T) {
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
-	defer csvFile.File.Close()
+	defer csvFile.Close()
 
 	if csvFile.RowCount != 4 {
 		t.Errorf("Expected 4 data rows in test.csv. Got %d", csvFile.RowCount)
@@ -62,7 +62,7 @@ func TestOpenBadFile(t *testing.T) {
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
-	defer csvFile.File.Close()
+	defer csvFile.Close()
 
 	if csvFile.RowCount != 4 {
 		t.Errorf("Expected 4 data rows in test.csv. Got %d", csvFile.RowCount)
@@ -84,7 +84,7 @@ func TestNoDataInFile(t *testing.T) {
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
-	defer csvFile.File.Close()
+	defer csvFile.Close()
 
 	if csvFile.RowCount != 0 {
 		t.Errorf("Expected 0 data rows in test.csv. Got %d", csvFile.RowCount)
@@ -102,7 +102,7 @@ func TestScanRows(t *testing.T) {
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
-	defer csvFile.File.Close()
+	defer csvFile.Close()
 
 	rCount := 0
 
@@ -122,7 +122,7 @@ func TestGetInvalidRow(t *testing.T) {
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
-	defer csvFile.File.Close()
+	defer csvFile.Close()
 
 	invalidRowNumber := csvFile.RowCount + 10
 	row := csvFile.Row(invalidRowNumber)
