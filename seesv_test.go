@@ -1,10 +1,11 @@
 package seesv_test
 
 import (
-	"davealexis/seesv"
 	"fmt"
 	"log"
 	"testing"
+
+	"github.com/davealexis/seesv"
 )
 
 func TestOpen(t *testing.T) {

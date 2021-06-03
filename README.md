@@ -157,3 +157,4 @@ The following are some of the features that are coming:
 - [ ] Pipe delimited files
 - [ ] Tab delimited files
 - [ ] Fixed length files
+- [ ] Named access to column data, like Python's DictReader

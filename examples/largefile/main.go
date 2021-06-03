@@ -1,9 +1,10 @@
 package main
 
 import (
-	"davealexis/seesv"
 	"fmt"
 	"log"
+
+	"github.com/davealexis/seesv"
 )
 
 func main() {
