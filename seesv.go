@@ -5,9 +5,9 @@ package seesv
 import (
 	"bufio"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 )
@@ -46,7 +46,7 @@ and that the file contains a column header line.
 This returns the last 10 rows of the file.
 */
 func (df *DelimitedFile) Open(filePath string, linesToSkip int, hasHeader bool) error {
-	df.RowIndex = make([]int64, 0, 10_000)
+	df.RowIndex = make([]int64, 0, 2_000_000)
 
 	stat, err := os.Stat(filePath)
 	if err != nil {
@@ -58,7 +58,7 @@ func (df *DelimitedFile) Open(filePath string, linesToSkip int, hasHeader bool) 
 	df.File, err = os.Open(filePath)
 
 	if err != nil {
-		log.Fatal("Failed to open source file")
+		return errors.New("Failed to open source file")
 	}
 
 	var offset int64
@@ -90,11 +90,9 @@ func (df *DelimitedFile) Open(filePath string, linesToSkip int, hasHeader bool) 
 	bytesRead := bufferSize
 	df.RowCount = 0
 
-	log.Println("Scanning...")
-
 	var pos int64 = offset
 	var i int64 = 0
-	var lastLineBreak int64
+	var lastLineBreak int64 = pos
 	df.RowIndex = append(df.RowIndex, pos)
 	df.File.Seek(pos, 0)
 
@@ -126,13 +124,17 @@ func (df *DelimitedFile) Open(filePath string, linesToSkip int, hasHeader bool) 
 			}
 		}
 
+		pos += int64(bytesRead)
+
 		if bytesRead < bufferSize {
-			pos += int64(bytesRead)
+			break
 		}
 
-		if pos-lastLineBreak > 2 {
-			df.RowCount++
-		}
+	}
+
+	// We need to ensure we count the last line if it does not have a carriage return.
+	if pos-lastLineBreak > 2 {
+		df.RowCount++
 	}
 
 	return nil

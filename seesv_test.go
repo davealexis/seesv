@@ -10,19 +10,19 @@ import (
 
 func TestOpen(t *testing.T) {
 	var csvFile seesv.DelimitedFile
-	err := csvFile.Open("testdata/test.csv", 0, true)
+	err := csvFile.Open("testdata/test.csv", 1, true)
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
 	defer csvFile.Close()
 
-	if csvFile.RowCount != 4 {
-		t.Errorf("Expected 4 data rows in test.csv. Got %d", csvFile.RowCount)
+	if csvFile.RowCount != 5_000 {
+		t.Errorf("Expected 5,000 data rows in test.csv. Got %d", csvFile.RowCount)
 	}
 
 	hCount := len(csvFile.Headers)
-	if hCount != 3 {
-		t.Errorf("Expected 3 header columns. Got %d", hCount)
+	if hCount != 8 {
+		t.Errorf("Expected 8 header columns. Got %d", hCount)
 	}
 
 	if csvFile.Headers[0] != "ID" {
@@ -99,7 +99,7 @@ func TestNoDataInFile(t *testing.T) {
 
 func TestScanRows(t *testing.T) {
 	var csvFile seesv.DelimitedFile
-	err := csvFile.Open("testdata/test.csv", 0, true)
+	err := csvFile.Open("testdata/test.csv", 1, true)
 	if err != nil {
 		log.Fatal("Failed to open file")
 	}
@@ -107,13 +107,17 @@ func TestScanRows(t *testing.T) {
 
 	rCount := 0
 
+	var value string
+
 	for row := range csvFile.Rows(0, -1) {
-		fmt.Println(row)
+		value = row[0]
 		rCount++
 	}
 
+	fmt.Println(value)
+
 	if rCount != int(csvFile.RowCount) {
-		t.Errorf("Row scan did not produce expecter row count. Expected %d. Got %d", csvFile.RowCount, rCount)
+		t.Errorf("Row scan did not produce expected row count. Expected %d. Got %d", csvFile.RowCount, rCount)
 	}
 }
 
@@ -136,5 +140,30 @@ func TestGetInvalidRow(t *testing.T) {
 	for row := range csvFile.Rows(invalidRowNumber, -1) {
 		// Should not get here
 		t.Errorf("Should not have gotten a row: %v", row)
+	}
+}
+
+func TestGetLastRow(t *testing.T) {
+	var csvFile seesv.DelimitedFile
+	err := csvFile.Open("testdata/test.csv", 1, true)
+	if err != nil {
+		log.Fatal("Failed to open file")
+	}
+	defer csvFile.Close()
+
+	if csvFile.RowCount != 5000 {
+		t.Errorf("Expected %d row. Got %d", 5000, csvFile.RowCount)
+	}
+
+	rowToFetch := csvFile.RowCount - 1
+	row := csvFile.Row(rowToFetch)
+
+	// Expect row to be nil
+	if row == nil {
+		t.Error("Should have returned a row")
+	}
+
+	if row[0] != "11-1111111" {
+		t.Error("Got incorrect data for last row. Expected 11-1111111. Got", row[0])
 	}
 }
